@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <title>마이페이지</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Jua%3A400" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400" />
+  <link rel="stylesheet" href="../static/styles/myPage.css" />
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous">
+  </script>
+  <script>
+     $(document).ready(function () {
+      const email = getCookie('email');
+      console.log(email);
+
+      $.ajax({
+        type: "GET",
+        url: "api/userinfo?email=" + email,
+        //url: "api/userinfo",
+        //data:{ email: email},
+        dataType: "json",
+        async: false, // 순차적으로 실행함으로 중복 실행 오류를 방지함.
+      }).done(function (res) {
+        console.log(res);
+        var level = null;
+        var myTier = null;
+        if(res.level==1 || res.level==0) level = "하";
+        else if(res.level==2) level = "중";
+        else if(res.level==3) level = "상";
+
+        if(res.studyVocaCount == null) myTier = "브론즈(0점)";
+        else if(res.studyVocaCount<800) myTier = "브론즈(" +res.studyVocaCount+"점)";
+        else if(res.studyVocaCount<1200) myTier = "실버(" +res.studyVocaCount+"점)";
+        else myTier = "골드(" +res.studyVocaCount+"점)";
+        $("#myState").empty();
+        $("#myState").append(
+          "<div class='myState'>이름 : "+res.name+"</div>"+
+          "<div class='myState'>아이디(Email) : "+res.email+"</div>"+
+          "<div class='myState'>비밀번호 : "+res.passwordHint+"</div>"+
+          "<div class='myState'>레벨 테스트 결과 : "+level+"</div>"+
+          "<div class='myState'>내 티어 : "+myTier+"</div>"
+        );
+      }).catch(function (error) {
+        window.location.href="/loginPage";
+      })
+    });
+
+
+    function backselect() {
+      window.location.href = '/home';
+    }
+
+    function logOut() {
+      window.location.href = '/loginPage';
+      setCookie('email', null, 1);
+    }
+
+
+    function setCookie(name, value, days) {
+      const expires = new Date();
+      expires.setTime(expires.getTime() + (days * 60 * 60 * 1000));
+      document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/';
+    }
+
+    function getCookie(name) {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith(name + '=')) {
+          return cookie.substring(name.length + 1);
+        }
+      }
+      return null;
+    }
+  </script>
+</head>
+
+<body>
+  <div class="item--fqA">
+    <div class="item-2-PWG"></div>
+    <div class="auto-group-dnjj-V3W">
+      <div class="rectangle-2-Pua"></div>
+      <div class="person-1-WzC">
+        <img class="person-1-r2U" src="../static/assets/person.png" />
+        <div class="item--z8g">마이페이지</div>
+      </div>
+      <img class="clip-1-tUx" src="../static/assets/clip.png" />
+      <div id="buttons">
+        <button class="rectangle-10-DXE" onclick="backselect()">뒤로가기</button>
+        <button class="rectangle-11-5JY" onclick="logOut()">로그아웃</button>
+      </div>
+      <div id="myState" class="item--LkG">
+        <div class="myState">이름 : 허영현</div>
+        <div class="myState">
+          아이디(Email) : abcde@naver.com
+        </div>
+        <div class="myState">비밀번호 : 1234abcd</div>
+        <div class="myState">레벨 테스트 결과 : 하</div>
+        <div class="myState">내 티어 : 브론즈(382점)</div>
+      </div>
+    </div>
+
+    <div class="imgs" id="imgs">
+      <img id="img1" src="../static/assets/수뭉_좌.png" />
+      <img id="img2" src="../static/assets/수뭉_우.png" />
+    </div>
+  </div>
+
+</body>
+
+</html>

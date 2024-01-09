@@ -1,0 +1,150 @@
+html {
+  font-size: 62.5%;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+ul,
+li {
+  list-style: none;
+}
+input {
+  border: none;
+}
+body {
+  width: 144rem;
+}
+.item--83i {
+  width: 100%;
+  height: 102.4rem;
+  position: relative;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+.item--83i .rectangle-6-e24 {
+  width: 144rem;
+  height: 102.4rem;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: #cfe3ff;
+}
+.item--83i .rectangle-6-ne4 {
+  width: 144rem;
+  height: 102.4rem;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: #cfe3ff;
+}
+.item--83i .rectangle-7-YNL {
+  position: absolute;
+  left: 57rem;
+  top: 10.5rem;
+  font-size: 4.8rem;
+  font-weight: 400;
+  color: #000000;
+  font-family: Jua, "Source Sans Pro";
+}
+.item--83i .person-1-bLc {
+  width: 20.1rem;
+  height: 5rem;
+  position: absolute;
+  left: 119.7rem;
+  top: 3.6rem;
+}
+.item--83i .person-1-bLc .person-1-LJC {
+  width: 5rem;
+  height: 5rem;
+  position: absolute;
+  left: 0;
+  top: 0;
+  object-fit: cover;
+  vertical-align: top;
+}
+.item--83i .person-1-bLc .item--t4p {
+  width: 15.4rem;
+  height: 4rem;
+  position: absolute;
+  left: 4.7rem;
+  top: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.2rem;
+  font-weight: 400;
+  line-height: 1.25;
+  color: #000000;
+  font-family: Jua, "Source Sans Pro";
+  white-space: nowrap;
+}
+.item--83i > button:hover{
+  color: #6273c8;
+  border: 0.5px white solid;
+}
+
+.item--83i .rectangle-11-y6G {
+  width: 20rem;
+  height: 6rem;
+  position: absolute;
+  left: 3.3rem;
+  top: 93.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  font-weight: 400;
+  line-height: 1.25;
+  color: #ffffff;
+  font-family: Jua, "Source Sans Pro";
+  white-space: nowrap;
+  box-shadow: 0 0.4rem 0.4rem rgba(0, 0, 0, 0.25);
+  background-color: #4a5aad;
+  border-radius: 1rem;
+  border: none;
+}
+.item--83i .rectangle-12-pcg {
+  width: 24rem;
+  height: 6rem;
+  position: absolute;
+  left: 117rem;
+  top: 93.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  font-weight: 400;
+  line-height: 1.25;
+  color: #ffffff;
+  font-family: Jua, "Source Sans Pro";
+  white-space: nowrap;
+  box-shadow: 0 0.4rem 0.4rem rgba(0, 0, 0, 0.25);
+  background-color: #4a5aad;
+  border-radius: 1rem;
+  border: none;;
+}
+.item--83i .rectangle-2-HmA {
+  width: 73.5rem;
+  height: 81rem;
+  position: absolute;
+  left: 35.2rem;
+  top: 17.9rem;
+  background-color: #ffffff;
+  border-radius: 2rem;
+}
+
+.item--83i .q1-swallow-q2-bulk-q3-stain-q4-postpone--N1v {
+  width: 58.6rem;
+  height: 65rem;
+  position: absolute;
+  left: 8.5rem;
+  top: 8.5rem;
+  display: flex;
+  font-size: 4.4rem;
+  font-weight: 400;
+  line-height: 1.25;
+  color: #000000;
+  font-family: Jua, "Source Sans Pro";
+  flex-direction: column;
+}

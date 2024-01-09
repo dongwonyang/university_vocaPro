@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <title>관리자 단어 수정 페이지</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Jua%3A400"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400"
+    />
+    <link rel="stylesheet" href="../static/styles/indexModify.css"/>
+  </head>
+  <body>
+    <div class="item--v8Y">
+      <div class="auto-group-eupk-DtL">
+        <div class="auto-group-fr6x-Yvc">
+          <div class="item--7D2">관리자 모드</div>
+          <div class="person-1-o5r">
+            <img
+              class="person-1-YJL"
+              src="../static/assets/person.png"
+            />
+            <a href="myPage.html"><div class="item--Uxg">마이페이지</div></a>
+          </div>
+        </div>
+        <div class="rectangle-15-AKi">전체 단어</div>
+        <div class="auto-group-8vjc-EKa">
+          <div class="item--ikY">
+            단어
+            <br />
+
+            <br />
+            뜻
+          </div>
+          <div class="auto-group-ofrg-QtG">
+            <input type="text" id = "wordModified" class="rectangle-16-kSL"></input>
+            <input type="text" id = "meanModified" class="rectangle-17-GvU"></input>
+          </div>
+        </div>
+      </div>
+      <div class="auto-group-ra8g-Nic">
+        <div class="auto-group-qhha-XbW">
+          <div class="item-2-4LY"></div>
+          <button type="button" class="rectangle-10-YWc" onclick="location.href='indexAll.html'">취소</button>
+          <button type="button" class="rectangle-11-oSY" onclick="modifyWord()">수정하기</button>
+        </div>
+        <div class="item-3-fje"></div>
+      </div>
+      <div class="imgs" id="imgs">
+        <img id="img1" src="../static/assets/수뭉_좌.png" />
+        <img id="img2" src="../static/assets/수뭉_우.png" />
+      </div>
+    </div>
+    <script>
+      // URL에서 단어 ID 가져오기
+      var urlParams = new URLSearchParams(window.location.search);
+      var wordId = urlParams.get("id");
+
+      // 페이지 로딩 시 단어 정보 가져와서 입력 필드에 설정
+      fetch("/api/allvoca/" + wordId)
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          var wordModified = document.getElementById("wordModified");
+          var meanModified = document.getElementById("meanModified");
+
+          // 가져온 단어 정보를 입력 필드에 설정
+          wordModified.value = data.word;
+          meanModified.value = data.meaning;
+        })
+        .catch(function (error) {
+          console.log("단어 정보를 가져오는 중 오류가 발생했습니다:", error);
+        });
+
+      // 수정 버튼 클릭 시 단어 수정 로직 실행
+      function modifyWord() {
+        // 입력 필드에서 수정된 단어와 뜻 가져오기
+        var modifiedWord = document.getElementById("wordModified").value;
+        var modifiedMeaning = document.getElementById("meanModified").value;
+
+        // 단어 수정 API 호출
+        fetch("/api/updatevoca/" + wordId, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            voca: modifiedWord,
+            vocamean: modifiedMeaning,
+          }),
+        })
+          .then(function (response) {
+            if (response.ok) {
+              alert("단어가 성공적으로 수정되었습니다!");
+              // 수정 성공 후, 이동할 페이지로 리다이렉트 또는 필요한 처리 수행
+            } else {
+              alert("단어 수정에 실패했습니다.");
+            }
+          })
+          .catch(function (error) {
+            console.log("단어 수정 중 오류가 발생했습니다:", error);
+          });
+      }
+      var modifyButton = document.querySelector(".rectangle-11-oSY");
+      modifyButton.addEventListener("click", modifyWord);
+    </script>
+  </body>
+</html>

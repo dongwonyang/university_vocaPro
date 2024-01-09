@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <title>그룹-내가추가한단어들</title>
+  <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Jua%3A400"
+  />
+  <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400"
+  />
+  <link rel="stylesheet" href="../static/styles/groupMyAdded.css" />
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+          crossorigin="anonymous">
+  </script>
+
+</head>
+<body>
+<div class="item--WMN">
+  <div class="auto-group-s2ta-dB6">
+    <div class="auto-group-sc9n-9fE">
+      <div class="rectangle-16-t72" style="text-align: center;">전체 단어에서 추가하기</div>
+      <div class="person-1-KCL">
+        <img
+                class="person-1-Frg"
+                src="../static/assets/person.png"
+        />
+        <a  onclick="location.href='/myPage'"> <div class="item--QDn" style="cursor: pointer;">마이페이지</div></a>
+      </div>
+    </div>
+    <div class="rectangle-15-Gmn">내가 추가한 단어들</div>
+  </div>
+  <div class="auto-group-jfza-MoE">
+    <div class="item-2-7nQ"></div>
+    <div class="auto-group-7hex-DKe">
+      <div class="auto-group-2mqj-YMv">
+        <div class="auto-group-6hfe-mnp" id="searchResult" style="overflow-y: scroll;">
+          <dl class="such-seem-bureau-throughout-because-guess-saying-get--Xmz" id="vocaList">
+
+          </dl>
+          <div class="auto-group-kcgp-B5r" id="addBtns">
+          </div>
+          <div class="rectangle-14-gU8" style="z-index: -1;"></div>
+        </div>
+        <img class="line-1-5mA" src="../static/assets/person.png" />
+      </div>
+      <button type="button" class="rectangle-11-9yJ" id="button" onclick="location.href='/home'">뒤로가기</button>
+    </div>
+    <div class="item-3-dNg"></div>
+  </div>
+  <div class="imgs" id="imgs">
+    <img id="img1" src="../static/assets/수뭉_좌.png" />
+    <img id="img2" src="../static/assets/수뭉_우.png" />
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    $.ajax({
+      type: "GET",
+      url: "api/allGroupVoca",
+      async: false, // 순차적으로 실행함으로 중복 실행 오류를 방지함.
+    }).done(function (res) {
+      console.log(res);
+      $('#vocaList').empty();
+      $("#addBtns").empty();
+      for (let i = 0; i < res.length; i++) {
+        var allVoca = "<dt id='spelling_" + i + "'>" + res[i].voca + "</dt><dd id='mean" + i + "'>" +res[i].vocamean + "</dd><br/><br/>"
+        $('#vocaList').append(allVoca);
+        var addbtn = "<button class='circle' id='btn_" + i + "'><span>-</span></button><br/>"
+        $("#addBtns").append(addbtn);
+      }
+    }).catch(function (xhr, status, error) {
+      alert("서버 오류, 재접속 바람.");
+    });
+
+    $('#addBtns').on('click', '.circle', function (event) {
+      let btnId = $(event.currentTarget).attr('id');
+      console.log(btnId);
+
+      let voca = $('#spelling_' + btnId.split('_')[1]).text();
+      let vocamean = $('#mean_' + btnId.split('_')[1]).text();
+      $.ajax({
+        type: "DELETE",
+        url: "/api/removegroup",
+        dataType: "text",
+        async: false, // 순차적으로 실행함으로 중복 실행 오류를 방지함.
+        contentType: "application/json",
+        data: JSON.stringify({ voca: voca, vocamean: vocamean })
+      }).done(function (res) {
+        alert("제거 완료.");
+        location.reload();
+      }).catch(function (xhr, status, error) {
+        if (xhr.status == 500) {
+          alert("로그인 필요.")
+          window.location.href = "/loginPage"
+        } else alert("서버 오류, 재접속 바람.");
+      });
+    });
+  });
+  // $.ajax({
+  //   type: "GET",
+  //   url: "/api/studyword",
+  //   dataType: "json",
+  //   async: false, // 순차적으로 실행함으로 중복 실행 오류를 방지함.
+  // }).done(function (res) {
+  //   console.log(res);
+  //   $('#vocaList').empty();
+  //   $("#addBtns").empty();
+  //   for (let i = 0; i < res.voca.length; i++) {
+  //     var allVoca = "<dt id='spelling_" + i + "'>" + res.voca[i].voca + "</dt><dd id='mean" + i + "'>" + res.voca[i].vocamean + "</dd><br/><br/>"
+  //     $('#vocaList').append(allVoca);
+  //     var addbtn = "<button class='circle' id='btn_" + i + "'><span>+</span></button><br/>"
+  //     $("#addBtns").append(addbtn);
+  //   }
+  //
+  //   const searchInput = document.getElementById('searchWord');
+  //   const list = document.getElementById('vocaList');
+  //   const searchValue = searchInput.value.toLowerCase();
+  //   const terms = list.getElementsByTagName('dt');
+  //
+  //   var searchVoca = "";
+  //   var btnRe = "";
+  //   for (let i = 0; i < res.voca.length; i++) {
+  //     const term = terms[i];
+  //     const definition = term.nextElementSibling;
+  //     if (term.innerText.toLowerCase().includes(searchValue) || definition.innerText.toLowerCase().includes(searchValue)) {
+  //       searchVoca += "<dt id='spelling_" + i + "'>" + res.voca[i].voca + "</dt><dd id='mean_" + i + "'>" + res.voca[i].vocamean + "</dd><br/><br/>"
+  //       btnRe += "<button class='circle' id='btn_" + i + "'><span>+</span></button><br/>"
+  //     }
+  //   }
+  //   $('#vocaList').empty();
+  //   $("#addBtns").empty();
+  //   $('#vocaList').append(searchVoca);
+  //   $("#addBtns").append(btnRe);
+  // }).catch(function (xhr, status, error) {
+  //   alert("서버 오류, 재접속 바람.");
+  // });
+</script>
+
+</body>
+</html>

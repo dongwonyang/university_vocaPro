@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <title>레벨 테스트 결과</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Jua%3A400"
+    />
+    <link rel="stylesheet" href="../static/styles/levelTestResult2.css" />
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous"
+    ></script>
+    <script>
+        var getSuccess = localStorage.getItem('success');
+        //console.log(getSuccess);
+        var result;
+        if(getSuccess<10){
+          result="하"
+        }
+        else if(10<=getSuccess && getSuccess<=19){
+          result="중"
+        }
+        else{
+          result="상"
+        }
+
+        $( document ).ready( function() {
+          $("#result").append(
+                  '<span style="position: absolute;\n' +
+                  '  left: 55rem;\n' +
+                  '  top: 47rem;\n' +
+                  '  font-size: 4.8rem;\n' +
+                  '  font-weight: 400;\n' +
+                  '  color: #000000;\n' +
+                  '  font-family: Jua">내가 맞은 개수 : ' + getSuccess + "개" + "</span>\n" +
+                  '<span style="position: absolute;\n' +
+                  '  left: 68rem;\n' +
+                  '  top: 28rem;\n' +
+                  '  font-size: 10rem;\n' +
+                  '  font-weight: 400;\n' +
+                  '  color: #4a5aad;\n' +
+                  '  font-family: Jua">' + result + "</span>"
+          );
+        });
+
+    </script>
+  </head>
+  <body>
+    <div class="item--guW">
+      <div class="item-2-BLU"></div>
+      <div class="auto-group-dvpw-fWY">
+        <div class="rectangle-9-yn8">결과</div>
+        <div class="person-1-bLc">
+          <img class="person-1-LJC" src="../static/assets/person.png" />
+          <a href="myPage">
+            <div class="item--t4p">마이페이지</div>
+          </a>
+        </div>
+        <div id="result" class="auto-group-hqwu-Ru2">
+          <span class="info">상 : 20개 이상<br>중 : 10~19개<br>하 : 10개 미만</span>
+        </div>
+        <div class="imgs" id="imgs">
+          <img id="img1" src="../static/assets/수뭉_좌.png" />
+          <img id="img2" src="../static/assets/수뭉_우.png" />
+        </div>
+        <div class="auto-group-wzeg-R3n">
+            <button type="button" class="rectangle-10-AXA" onclick="history.back()">이전</button>
+            <button type="button" class="rectangle-8-q7W" onclick="location.href='home'" >확인</button>
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <title>티어 확인하기 페이지</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Jua%3A400" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400" />
+  <link rel="stylesheet" href="../static/styles/groupTier.css" />
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+          crossorigin="anonymous">
+  </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      const email = getCookie('email');
+      console.log(email);
+
+      $.ajax({
+        type: "GET",
+        url: "api/userinfo?email="+email,
+        //url: "api/userinfo",
+        //data:{ email: email},
+        dataType: "json",
+        async: false, // 순차적으로 실행함으로 중복 실행 오류를 방지함.
+      }).done(function (res) {
+        console.log(res);
+        var myImg=null;
+        let myScore=res.studyVocaCount;
+        if (myScore == null) myScore = 0;
+        if(res.tier == 1 || res.tier == 0) myImg="<img class='item-3-tM6' src='../static/assets/브론즈.png' />브론즈<br />";
+        else if(res.tier == 2) myImg="<img class='item-3-tM6' src='../static/assets/실버.png' />실버<br />";
+        else if(res.tier == 3) myImg="<img class='item-3-tM6' src='../static/assets/골드.png' />골드<br />";
+        $("#myState").empty();
+        $("#myState").append(
+          "<div class='item-382-MEg'>내 티어&nbsp;:&nbsp;"+
+          myImg+
+          "내 점수&nbsp;:&nbsp;"+myScore+"점" +
+        "</div>"
+        );
+      }).catch(function(error){
+        window.location.href = "/loginPage";
+      })
+    });
+
+
+    function getCookie(name) {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith(name + '=')) {
+          return cookie.substring(name.length + 1);
+        }
+      }
+      return null;
+    }
+
+    function backselect() {
+      window.location.href = '/home';
+    }
+  </script>
+</head>
+
+<body>
+<div class="item--LQp">
+  <div class="person-1-YV6">
+    <img class="person-1-snG" src="../static/assets/person.png" />
+    <a href="/myPage" class="item--RHz">마이페이지</a>
+  </div>
+  <div class="rectangle-12-aCg">
+    <div class="rectangle-12-hYC"></div>
+    <img class="item-1-dwe" src="../static/assets/clip.png" />
+    <div class="item--yVi">경쟁 규칙</div>
+    <div class="item-1--52x">
+      <span class="item-1--52x-sub-0">오늘의 단어 테스트에서 &nbsp;</span>
+      <span class="item-1--52x-sub-1">문제 하나 당 1점씩 누적</span>
+    </div>
+    <div class="frame-1-qpk">
+      <div class="auto-group-egta-B7v">
+        <img class="item-2-5yz" src="../static/assets/브론즈.png" />
+        <img class="item-2-5yz" src="../static/assets/실버.png" />
+        <img class="item-2-5yz" src="../static/assets/골드.png" />
+      </div>
+      <div class="auto-group-bohj-tgY">
+        <div class="item-1799-8001199-1200--Si4">
+          브론즈 1~799점
+          <br />
+          실버 800~1199점
+          <br />
+          골드 1200점 이상
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auto-group-88yy-8jJ">
+    <div class="rectangle-12-hYC"></div>
+    <div id="myState" class="item--EGY">
+      <div class="item-382-MEg">내 티어&nbsp;:&nbsp;
+        <img class="item-3-tM6" src="../static/assets/브론즈.png" />
+        브론즈
+        <br />
+        내 점수&nbsp;:&nbsp;382점
+      </div>
+    </div>
+  </div>
+  <button class="rectangle-11-3dJ" onclick="backselect()">나가기</button>
+</div>
+</body>
+
+</html>

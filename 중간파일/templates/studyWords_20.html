@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <title>단어 학습 페이지</title>
+  <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400"
+  />
+  <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Jua%3A400"
+  />
+  <link rel="stylesheet" href="../static/styles/studyWords_20.css"/>
+  <script
+          src="https://code.jquery.com/jquery-3.4.1.js"
+          integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+          crossorigin="anonymous"
+  ></script>
+  <script>
+    function movePage(url) {
+      window.location.href = url;
+    }
+
+    var test = []
+    $(document).ready(function () {
+      $.ajax({
+        type: "GET",
+        url: "/api/allvoca",
+        dataType: "json",
+        async: false, // 순차적으로 실행함으로 중복 실행 오류를 방지함.
+      }).done(function (res) {
+        console.log(res);
+
+        let i = 1;
+        test = res.voca;
+        console.log(test);
+
+        function shuffle(array) {
+          array.sort(() => Math.random() - 0.5);
+        }
+
+        shuffle(test);
+
+        res.voca.forEach((element) => {
+          //console.log(element.boxNum, element.expirDt);
+          //console.log(element); //web의 print
+
+          if(i==21){
+            return false;
+          }
+
+          $("#words").append(
+                  "<div>" +
+                  i +
+                  ". " +
+                  element.voca +
+                  "<br/>" +
+                  "<div style='padding-left: 65px; padding-top:10px;'>" +
+                  element.vocamean +
+                  "</div>" +
+                  "<br/>"
+          );
+          i++;
+        });
+      });
+    });
+
+  </script>
+</head>
+<body>
+<div  id="test" class="item--83i">
+  <div class="rectangle-6-e24"></div>
+  <div class="rectangle-6-ne4"></div>
+  <span id = "title1" class="rectangle-7-YNL">오늘의 학습단어</span>
+  <span id = "score" class="score"></span>
+  <div class="person-1-bLc">
+    <img class="person-1-LJC" src="../static/assets/person.png" />
+    <a href="myPage">
+      <div class="item--t4p">마이페이지</div>
+    </a>
+  </div>
+  <button id = "btn1" class="rectangle-11-y6G" onclick="movePage('/home')">나가기</button>
+  <button id = "btn2" class="rectangle-12-pcg" onclick="location.href='testWords_20'">테스트 시작</button>
+
+  <div class="rectangle-2-HmA" style="overflow-y: scroll">
+    <div
+            id="words"
+            class="q1-swallow-q2-bulk-q3-stain-q4-postpone--N1v"
+    ></div>
+  </div>
+</div>
+
+</body>
+</html>

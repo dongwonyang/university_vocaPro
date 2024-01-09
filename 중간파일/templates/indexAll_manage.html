@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <title>관리자 전체 단어 목록 페이지</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Jua%3A400" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400" />
+  <link rel="stylesheet" href="../static/styles/indexAll.css" />
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous">
+    </script>
+</head>
+<script>
+  $(document).ready(function () {
+    $.ajax({
+      type: "GET",
+      url: "/api/allvoca",
+      dataType: "json",
+      async: false, // 순차적으로 실행함으로 중복 실행 오류를 방지함.
+    }).done(function (res) {
+      console.log(res);
+      $('#vocaList').empty();
+      $("#addBtns").empty();
+      for (let i = 0; i < res.voca.length; i++) {
+        var allVoca = "<dt id='spelling_" + i + "'>" + res.voca[i].voca + "</dt><dd id='mean" + i + "'>" + res.voca[i].vocamean + "</dd><br/><br/>"
+        $('#vocaList').append(allVoca);
+        var addbtn = "<button class='circle' id='btn_" + i + "'><span>+</span></button><br/>"
+        $("#addBtns").append(addbtn);
+      }
+    }).catch(function (xhr, status, error) {
+      alert("서버 오류, 재접속 바람.");
+    });
+
+    let btnId = null;
+    let voca = null;
+    let vocamean = null;
+    let manageMode = null;
+    let apiId = null;
+
+    $('#addBtns').on('click', '.circle', function (event) {
+      $('#' + btnId).css("color", "black");
+      $('#' + btnId).css("border", "0.4rem solid black");
+      btnId = $(this).attr('id');
+      console.log(btnId);
+      for (let i = 0; i < 1500; i++) {
+        apiId = i + 1;
+        if (btnId == "btn_" + i) {
+          voca = $('#spelling_' + i).text();
+          vocamean = $('#mean_' + i).text();
+          // $('#' + btnId).css("color", "gray");
+          $('#' + btnId).css("border", "gray");
+        }
+      }
+    });
+
+    $('#mag1').click(function () {
+-        $('#index').css("display", "none");
+        $('#modify').css("display", "block");
+        manageMode = 1;
+
+    });
+    $('#mag2').click(function () {
+      if (btnId != null && voca != null && vocamean != null && apiId != null) {
+        if (confirm("정말로 영어 단어를 삭제하시겠습니까?")) {
+          $.ajax({
+            type: "DELETE",
+            url: "/api/deletevoca/" + apiId,
+            async: false, // 순차적으로 실행함으로 중복 실행 오류를 방지함.
+          }).done(function (res) {
+            alert("삭제 완료.");
+            window.location.href = "/indexAll"
+          }).catch(function (error) {
+            alert("오류 발생, 재시도 바람.")
+          })
+        } else alert("단어를 선택해주세요.");
+      }
+    });
+    $('#mag3').click(function () {
+      if (btnId != null && voca != null && vocamean != null && apiId != null) {
+        $('#index').css("display", "none");
+        $('#modify').css("display", "block");
+        manageMode = 3;
+      } else alert("단어를 선택해주세요.");
+    });
+
+    $('#modifyBtn').click(function () { // 1 추가 2 삭제 3 수정
+      let newVoca = $('#wordModified').val();
+      let newVocamean = $('#meanModified').val();
+      if (manageMode == 1) {
+        $.ajax({
+          type: "POST",
+          url: "/api/addvoca",
+          dataType: "text",
+          contentType: "application/json",
+          async: false, // 순차적으로 실행함으로 중복 실행 오류를 방지함.
+          data: JSON.stringify({ voca: newVoca, vocamean: newVocamean })
+        }).done(function (res) {
+          alert("추가 완료.");
+          window.location.href = "/indexAll"
+        }).catch(function (error) {
+          alert("오류 발생, 재시도 바람.")
+        })
+      } else if (manageMode == 3) {
+        $.ajax({
+          type: "PUT",
+          url: "/api/updatevoca/" + apiId,
+          dataType: "text",
+          contentType: "application/json",
+          async: false, // 순차적으로 실행함으로 중복 실행 오류를 방지함.
+          data: JSON.stringify({ voca: newVoca, vocamean: newVocamean })
+        }).done(function (res) {
+          alert("수정 완료.");
+          window.location.href = "/indexAll"
+        }).catch(function (error) {
+          alert("오류 발생, 재시도 바람.")
+        })
+      }
+    })
+  });
+
+
+
+  function searchPress() {
+    $.ajax({
+      type: "GET",
+      url: "/api/allvoca",
+      dataType: "json",
+      async: false, // 순차적으로 실행함으로 중복 실행 오류를 방지함.
+    }).done(function (res) {
+      console.log(res);
+      $('#vocaList').empty();
+      $("#addBtns").empty();
+      for (let i = 0; i < res.voca.length; i++) {
+        var allVoca = "<dt id='spelling_" + i + "'>" + res.voca[i].voca + "</dt><dd id='mean" + i + "'>" + res.voca[i].vocamean + "</dd><br/><br/>"
+        $('#vocaList').append(allVoca);
+        var addbtn = "<button class='circle' id='btn_" + i + "'><span>+</span></button><br/>"
+        $("#addBtns").append(addbtn);
+      }
+
+      const searchInput = document.getElementById('searchWord');
+      const list = document.getElementById('vocaList');
+      const searchValue = searchInput.value.toLowerCase();
+      const terms = list.getElementsByTagName('dt');
+
+      var searchVoca = "";
+      var btnRe = "";
+      for (let i = 0; i < res.voca.length; i++) {
+        const term = terms[i];
+        const definition = term.nextElementSibling;
+        if (term.innerText.toLowerCase().includes(searchValue) || definition.innerText.toLowerCase().includes(searchValue)) {
+          searchVoca += "<dt id='spelling_" + i + "'>" + res.voca[i].voca + "</dt><dd id='mean_" + i + "'>" + res.voca[i].vocamean + "</dd><br/><br/>"
+          btnRe += "<button class='circle' id='btn_" + i + "'><span>+</span></button><br/>"
+        }
+      }
+      $('#vocaList').empty();
+      $("#addBtns").empty();
+      $('#vocaList').append(searchVoca);
+      $("#addBtns").append(btnRe);
+    }).catch(function (xhr, status, error) {
+      alert("서버 오류, 재접속 바람.");
+    });
+  };
+
+
+  function backIndex() {
+    $('#index').css("display", "block");
+    $('#modify').css("display", "none");
+  }
+
+
+
+</script>
+
+<body>
+  <div class="item--2L8" id="index" style="display: block;">
+    <div class="auto-group-hxbs-8tx">
+      <div class="auto-group-r11z-5JQ">
+        <div class="item--d52">관리자 모드</div>
+        <div class="person-1-XgC">
+          <img class="person-1-UbS" src="../static/assets/person.png" />
+          <a href="/myPage">
+            <div class="item--DJ8" style="">마이페이지</div>
+          </a>
+        </div>
+      </div>
+      <div class="auto-group-tvhr-HHz">
+        <div class="rectangle-15-ywW">전체 단어</div>
+        <button type="button" class="rectangle-19-smz" id="mag1">추가</button>
+      </div>
+    </div>
+    <div class="auto-group-jnme-AFJ">
+      <div class="item-2-uya"></div>
+      <div class="auto-group-fo6g-oZA">
+        <div class="auto-group-ffeg-XVA">
+          <div class="auto-group-3xtg-eJt">
+            <input type="text" id="searchWord" class="item--YfA" placeholder="단어 검색"
+              style="background-color: transparent;"></input>
+            <button class="searchBtn" onclick="searchPress()"></button>
+          </div>
+
+          <div class="auto-group-6hfe-mnp" id="searchResult" style="overflow-y: scroll;">
+            <dl class="such-seem-bureau-throughout-because-guess-saying-get--Xmz" id="vocaList">
+
+            </dl>
+            <div class="auto-group-kcgp-B5r" id="addBtns">
+              <button class="circle"><span>+</span></button><br />
+              <button class="circle"><span>+</span></button><br />
+            </div>
+            <button type="button" class="rectangle-19-smz" id="mag2">삭제</button>
+            <button type="button" class="rectangle-19-smz" id="mag3">수정</button>
+          </div>
+        </div>
+        <button type="button" class="rectangle-11-8Yp" onclick="location.href='/home'">뒤로가기</button>
+      </div>
+      <div class="item-3-bSQ"></div>
+    </div>
+    <div class="imgs" id="imgs">
+      <img id="img1" src="../static/assets/수뭉_좌.png" />
+      <img id="img2" src="../static/assets/수뭉_우.png" />
+    </div>
+  </div>
+
+
+  <div class="item--v8Y" id="modify" style="display: none;">
+    <div class="auto-group-eupk-DtL">
+      <div class="auto-group-fr6x-Yvc">
+        <div class="item--7D2">관리자 모드</div>
+        <div class="person-1-o5r">
+          <img class="person-1-YJL" src="../static/assets/person.png" />
+          <a href="/myPage">
+            <div class="item--Uxg">마이페이지</div>
+          </a>
+        </div>
+      </div>
+      <div class="rectangle-15-AKi">전체 단어</div>
+      <div class="auto-group-8vjc-EKa">
+        <div class="item--ikY">
+          단어
+          <br />
+
+          <br />
+          뜻
+        </div>
+        <div class="auto-group-ofrg-QtG">
+          <input type="text" id="wordModified" class="rectangle-16-kSL"></input>
+          <input type="text" id="meanModified" class="rectangle-17-GvU"></input>
+        </div>
+      </div>
+    </div>
+    <div class="auto-group-ra8g-Nic">
+      <div class="auto-group-qhha-XbW">
+        <div class="item-2-4LY"></div>
+        <button type="button" class="rectangle-10-YWc" onclick="backIndex()">취소</button>
+        <button type="button" class="rectangle-11-oSY" id="modifyBtn">수정하기</button>
+      </div>
+      <div class="item-3-fje"></div>
+    </div>
+    <div class="imgs" id="imgs">
+      <img id="img1" src="../static/assets/수뭉_좌.png" />
+      <img id="img2" src="../static/assets/수뭉_우.png" />
+    </div>
+  </div>
+</body>
+
+</html>

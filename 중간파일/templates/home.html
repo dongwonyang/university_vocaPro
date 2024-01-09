@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <title>홈 화면</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Jua%3A400" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400" />
+  <link rel="stylesheet" href="../static/styles/home.css" />
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous">
+    </script>
+  <script>
+    function movePage(url) {
+      if(getCookie('email')=='IamNotUserIamAdmin@email.com' && url=='/indexAll') {window.location.href = "/indexAll_manage";}
+      window.location.href = url;
+    }
+
+    function groupSelect() {
+      $('#home1').css('display', 'none');
+      $('#home2').css('display', 'block');
+      $('#imgs').css('margin-top', '-23.5rem');
+    }
+
+    function backSelect() {
+      $('#home2').css('display', 'none');
+      $('#home1').css('display', 'block');
+      $('#imgs').css('margin-top', '-21rem');
+    }
+
+    function getCookie(name) {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith(name + '=')) {
+          return cookie.substring(name.length + 1);
+        }
+      }
+      return null;
+    }
+  </script>
+</head>
+
+<body>
+  <div class="item--gBz">
+    <div class="person-1-YV6">
+      <img class="person-1-snG" src="../static/assets/person.png" />
+      <a href="/myPage" class="item--RHz">마이페이지</a>
+    </div>
+    <div id="home1">
+      <div class="auto-group-prtw-1zx">
+        <div class="rectangle-10-Rua">
+          <img class="competition-1-aXa" src="../static/assets/study.png" />
+          <button class="auto-group-nxd2-hs6" onclick="movePage('/testSelec')">
+            <div class="rectangle-11-rjz" style="background-color: #bb7450;"></div>
+            <div class="rectangle-10-QWc" style="background-color: #ffa87b;"></div>
+            <div class="item--xY8">단어 학습하기</div>
+          </button>
+        </div>
+        <div class="rectangle-10-Rua">
+          <img class="competition-1-aXa" src="../static/assets/test.png" />
+          <button class="auto-group-nxd2-hs6" onclick="groupSelect()">
+            <div class="rectangle-11-rjz" style="background-color: #924f57;"></div>
+            <div class="rectangle-10-QWc" style="background-color: #f35c6e;"></div>
+            <div class="item--xY8">단어 그룹별로 보기</div>
+          </button>
+        </div>
+        <div class="rectangle-10-Rua">
+          <img class="competition-1-aXa" src="../static/assets/see.png" />
+          <button class="auto-group-nxd2-hs6" onclick="movePage('/groupTier')">
+            <div class="rectangle-11-rjz"></div>
+            <div class="rectangle-10-QWc"></div>
+            <div class="item--xY8">티어 확인하기</div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="home2">
+      <div class="auto-group-prtw-1zx">
+        <div id="controlUI">
+          <div class="rectangle-10-Rua">
+            <button class="auto-group-nxd2-hs6" onclick="movePage('/indexAll')">
+              <div class="rectangle-11-rjz" style="background-color: #bb7450;"></div>
+              <div class="rectangle-10-QWc" style="background-color: #ffa87b;"></div>
+              <div class="item--xY8">전체 단어 보기</div>
+            </button>
+          </div>
+          <div class="rectangle-10-Rua">
+            <button class="auto-group-nxd2-hs6" onclick="movePage('/groupWrong')">
+              <div class="rectangle-11-rjz" style="background-color: #924f57;"></div>
+              <div class="rectangle-10-QWc" style="background-color: #f35c6e;"></div>
+              <div class="item--xY8">오답노트</div>
+            </button>
+          </div>
+          <div class="rectangle-10-Rua">
+            <button class="auto-group-nxd2-hs6" onclick="movePage('/groupMyAdded')">
+              <div class="rectangle-11-rjz"></div>
+              <div class="rectangle-10-QWc"></div>
+              <div class="item--xY8">내가 추가한 단어들</div>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="btnbackground">
+        <button class="backBtn" onclick="backSelect()">뒤로가기</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="imgs" id="imgs">
+    <img id="img1" src="../static/assets/수뭉_좌.png" />
+    <img id="img2" src="../static/assets/수뭉_우.png" />
+  </div>
+</body>
+
+</html>

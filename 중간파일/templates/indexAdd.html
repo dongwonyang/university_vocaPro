@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <title>관리자 단어 추가 페이지</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Jua%3A400"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400"
+    />
+    <link rel="stylesheet" href="../static/styles/indexAdd.css" />
+  </head>
+  <body>
+    <div class="item--BHz">
+      <div class="auto-group-myng-ty6">
+        <div class="auto-group-ffvy-2ZW">
+          <div class="item--nYg">관리자 모드</div>
+          <div class="person-1-g8G">
+            <img
+              class="person-1-Wsz"
+              src="../static/assets/person.png"
+            />
+            <a href="myPage.html"> <div class="item--rgx">마이페이지</div></a>
+          </div>
+        </div>
+        <div class="rectangle-15-LME">전체 단어</div>
+        <div class="auto-group-dy5r-bY4">
+          <div class="item--WQ8">
+            <p>
+            단어
+            <br />
+            
+            <br />
+            뜻
+          </p>
+          </div>
+          <div class="auto-group-4i3s-QEc">
+            <input type="text" id="wordAdded" class="rectangle-16-9T6"></input>
+
+            <input type="text" id="meanAdded" class="rectangle-17-Gnc"></input>
+          </div>
+        </div>
+      </div>
+      <div class="auto-group-dq84-mUU">
+        <div class="auto-group-jm6q-848">
+          <div class="item-2-eoA"></div>
+          <button type="button" class="rectangle-10-Yde" onclick="location.href='/indexAll'">취소</button>
+          <button class="rectangle-11-DDz" onclick="addWord()">추가하기</button>
+          <script>
+            $(document).ready(function() {
+              $(".rectangle-11-DDz").on("click", function() {
+                // 단어 추가 로직
+                var wordInput = document.getElementById("wordAdded");
+                var meanInput = document.getElementById("meanAdded");
+                var word = wordInput.value;
+                var meaning = meanInput.value;
+
+                // 입력값 유효성 검사
+                if (word.trim() === "" || meaning.trim() === "") {
+                  alert("단어와 뜻을 모두 입력해주세요.");
+                  return;
+                }
+
+                // 단어 추가 API 요청
+                $.ajax({
+                  url: "/api/allvoca",
+                  method: "GET",
+                  success: function (response) {
+                    var wordExists = false;
+                    for (var i = 0; i < response.length; i++) {
+                      if (response[i].word === word) {
+                        wordExists = true;
+                        break;
+                      }
+                    }
+
+                    if (wordExists) {
+                      window.location.href = "indexModifyFailed.html"; // 단어가 이미 존재하는 경우 페이지 이동
+                    } else {
+                      $.ajax({
+                        url: "/api/addvoca",
+                        method: "POST",
+                        data: {
+                          voca: "추추추가",
+                          vocamean: "추추추가"
+                        },
+                        success: function (response) {
+                          alert("단어가 성공적으로 추가되었습니다!");
+
+                          wordInput.value = "";
+                          meanInput.value = "";
+                        },
+                        error: function () {
+                          alert("단어 추가에 실패했습니다.");
+                        }
+
+                      });
+                    }
+                  },
+                  error:function (){
+                    alert("단어 조회에 실패했습니다.");
+                  }
+                });
+              });
+            });
+
+
+
+          </script>
+        </div>
+        <div class="item-3-Uvc"></div>
+      </div>
+      <div class="imgs" id="imgs">
+        <img id="img1" src="../static/assets/수뭉_좌.png" />
+        <img id="img2" src="../static/assets/수뭉_우.png" />
+      </div>
+    </div>
+  </body>
+</html>

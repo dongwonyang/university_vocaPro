@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <title>단어 학습 페이지</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Jua%3A400" />
+  <link rel="stylesheet" href="../static/styles/testWords_20.css" />
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+          crossorigin="anonymous"></script>
+  <script>
+    function movePage(url) {
+      window.location.href = url;
+    }
+    var vocaId = [];
+    var test = [];
+    $(document).ready(function () {
+      $.ajax({
+        type: "GET",
+        url: "/api/testwords",
+        dataType: "json",
+        async: false, // 순차적으로 실행함으로 중복 실행 오류를 방지함.
+      }).done(function (res) {
+        console.log(res);
+        for (let i = 0; i < 20; i++) {
+          vocaId.push(res.voca[i].id);
+          console.log(vocaId);
+        }
+        test = res.voca;
+        console.log(test);
+
+        for (let i = 0; i < 20; i++) {
+          let l = i + 1;
+          $("#words").append(
+                  "<div>Q" +
+                  l +
+                  ". '" +
+                  res.voca[i].voca +
+                  "' 의 뜻은 '" +
+                  res.voca[i].vocamean +
+                  "' 이다.<br/><br/>" +
+                  '<div className="frame-4-osE" style="display: flex;flex-direction: row;justify-content: space-evenly;">\n' +
+                  '          \n' +
+                  '            <div className="rectangle-17-9gC">\n' +
+                  '                <input type="radio" id="check' + l + '_1" name="check' + l + '" value="1" />\n' +
+                  '                <label for="check' + l + '_1"></label>\n' +
+                  '                <label>O</label>\n' +
+                  '            </div>\n' +
+                  '            <div className="rectangle-18-Bct">\n' +
+                  '                <input type="radio" id="check' + l + '_2" name="check' + l + '" value="0" />\n' +
+                  '                <label for="check' + l + '_2"></label>\n' +
+                  '                <label>X</label>\n' +
+                  '            </div>\n' +
+                  '          </div><br/><br/>'
+          );
+        };
+      });
+
+
+      vocaId = vocaId.sort(function (a, b) {
+        return a - b;
+      });
+      console.log(vocaId);
+
+      for (let i = 0; i < vocaId.length; i++) {
+        $.ajax({
+          type: "GET",
+          url: "/api/findvoca/" + vocaId[i],
+          dataType: "json",
+          async: false, // 순차적으로 실행함으로 중복 실행 오류를 방지함.
+        }).done(function (res) {
+          console.log(res);
+          $("#studywords").append(
+                  "<div>" +
+                  (i + 1) +
+                  ". " +
+                  res.voca +
+                  "<br/>" +
+                  "<div style='padding-left: 65px; padding-top:10px;'>" +
+                  res.vocamean +
+                  "</div>" +
+                  "<br/>"
+          );
+        })
+      }
+    });
+    var data = null;
+    function submit() {
+      var wrongList = Array(20).fill(-1);
+
+      //for (var i = 20; i <= 29; i++) {
+      // wrongList[i] = 0;
+      //}
+
+      Array.from($("[name*='check']:checked")).forEach((element) => {
+        let ele = $(element)[0];
+        wrongList[ele.name.replace("check", "") - 1] = ele.value;
+      });
+
+      if (wrongList.includes(-1)) {
+        alert("덜 풀었습니다.");
+        return;
+      }
+
+      console.log(wrongList);
+      let success = 0;
+      let wrongs = [];
+      test.forEach((element, index) => {
+        if(index>=20) return;
+        if (String(test[index].label) !== wrongList[index]) {
+          success += 1;
+          wrongs.push(String(test[index].id));
+          if (test[index].label === 1) {
+            $("#check" + (index + 1) + "_" + String(1)).next().addClass("rectangle-red")
+          } else {
+            $("#check" + (index + 1) + "_" + String(2)).next().addClass("rectangle-red")
+          }
+        }
+      });
+      success = 20 - success;
+      data = { 'wrongs': wrongs.join(), "cnt": success }
+
+      $("#score").append(
+              success + "점"
+      );
+
+      $("#words").css("pointer-events", "none");
+      document.title = "단어 테스트 결과";
+      $("#title1").text("테스트 결과");
+      $("#title1").css("left", "61.5rem");
+      $("#btn1").remove();
+
+      $("#btn2").css("display", "none");
+      $("#btn3").css("display", "block");
+    }
+    function send() {
+      if (data.cnt == 20)
+        data = { 'wrongs': "9999", "cnt": 20 }
+      console.log(data);
+      $.ajax({
+        type: "POST",
+        url: "/api/studyResult",
+        data: JSON.stringify(data),
+        dataType: "text",
+        contentType: "application/json",
+        async: false, // 순차적으로 실행함으로 중복 실행 오류를 방지함.
+      }).done(function (res) {
+        $(location).attr("href", "home")
+      });
+    }
+    function giveUp() {
+      $('#test').css('display', 'none');
+      $('#giveUp').css('display', 'block');
+    }
+    function dontGiveUp() {
+      $('#giveUp').css('display', 'none');
+      $('#test').css('display', 'block');
+    }
+    function goTest() {
+      $('#study').css('display', 'none');
+      $('#test').css('display', 'block');
+      document.title = "단어 테스트 페이지";
+    }
+
+  </script>
+</head>
+
+<body>
+<div id="study" class="item--83i">
+  <div class="rectangle-6-e24"></div>
+  <div class="rectangle-6-ne4"></div>
+  <span id="title2" class="rectangle-7-YNL" style="left: 57rem">오늘의 학습단어</span>
+  <div class="person-1-bLc">
+    <img class="person-1-LJC" src="../static/assets/person.png" />
+    <a href="myPage">
+      <div class="item--t4p">마이페이지</div>
+    </a>
+  </div>
+  <button class="rectangle-11-y6G" onclick="movePage('/home')">나가기</button>
+  <button class="rectangle-12-pcg" onclick="goTest()" style="width: 24rem; left: 117rem;">테스트 시작</button>
+
+  <div class="rectangle-2-HmA" style="overflow-y: scroll">
+    <div id="studywords" class="q1-swallow-q2-bulk-q3-stain-q4-postpone--N1v"></div>
+  </div>
+</div>
+
+<div id="test" class="item--83i" style="display: none;">
+  <div class="rectangle-6-e24"></div>
+  <div class="rectangle-6-ne4"></div>
+  <span id="title1" class="rectangle-7-YNL">오늘의 단어 테스트</span>
+  <span id="score" class="score"></span>
+  <div class="person-1-bLc">
+    <img class="person-1-LJC" src="../static/assets/person.png" />
+    <a href="myPage">
+      <div class="item--t4p">마이페이지</div>
+    </a>
+  </div>
+  <button id="btn1" class="rectangle-11-y6G" onclick="giveUp()">포기</button>
+  <button id="btn2" class="rectangle-12-pcg" onclick="submit()">제출</button>
+  <button id="btn3" class="rectangle-12-pcg" style="display: none;" onclick="send()">확인</button>
+
+  <div class="rectangle-2-HmA" style="overflow-y: scroll">
+    <div id="words" class="q1-swallow-q2-bulk-q3-stain-q4-postpone--N1v"></div>
+  </div>
+</div>
+
+<div id="giveUp" class="item--vLg">
+  <div class="rectangle-7-czC"></div>
+  <div class="item--8Br">찐 포기할거임?</div>
+  <button class="rectangle-9-zzk" onclick="movePage('/home')">예</button>
+  <button class="rectangle-10-fb6" onclick="dontGiveUp()">아니오</button>
+</div>
+</body>
+
+</html>
